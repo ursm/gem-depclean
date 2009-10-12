@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "gem-depclean"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{Uninstall all unnecessary gems.}
+    gem.description = %Q{Uninstall all unnecessary gems.}
     gem.email = "ursm@ursm.jp"
     gem.homepage = "http://github.com/ursm/gem-depclean"
     gem.authors = ["Keita Urashima"]
