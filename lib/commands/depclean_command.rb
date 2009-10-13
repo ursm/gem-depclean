@@ -23,7 +23,6 @@ class Gem::Commands::DepcleanCommand < Gem::Command
       return
     end
 
-
     targets.each do |t|
       say "#{t.name} (#{t.version})"
     end

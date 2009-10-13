@@ -63,7 +63,7 @@ class Gem::Commands::WorldCommand < Gem::Command
       f << Gem.source_index.map(&:last).select {|spec|
         spec.dependent_gems.empty?
       }.group_by(&:name).inject({}) {|h, (name, specs)|
-        versions = specs.sort_by(&:version).map {|spec| spec.version }
+        versions = specs.map(&:version).sort
         versions[-1] = Gem::Requirement.default
 
         h.merge(name => versions.map(&:to_s))
