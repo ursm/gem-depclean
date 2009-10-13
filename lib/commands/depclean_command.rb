@@ -31,7 +31,7 @@ class Gem::Commands::DepcleanCommand < Gem::Command
     return unless ask_yes_no 'Would you like to uninstall these gems?'
 
     targets.each do |gem|
-      Gem::Uninstaller.new(gem.name, :version => gem.version, :ignore => true).uninstall
+      Gem::Uninstaller.new(gem.name, :version => gem.version, :user_install => true, :ignore => true).uninstall
     end
   end
 
