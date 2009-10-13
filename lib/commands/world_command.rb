@@ -20,7 +20,7 @@ class Gem::Commands::WorldCommand < Gem::Command
   end
 
   def world_path
-    File.join(Gem.user_home, '.gem', 'world')
+    File.join(Gem.user_dir, 'world')
   end
 
   def world_gems
