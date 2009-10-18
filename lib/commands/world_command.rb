@@ -7,8 +7,12 @@ class Gem::Commands::WorldCommand < Gem::Command
     command = Gem::CommandManager.instance['install']
     name = installer.spec.name
 
-    if command.get_all_gem_names.include?(name)
-      new.add name, command.options[:version]
+    begin
+      if command.get_all_gem_names.include?(name)
+        new.add name, command.options[:version]
+      end
+    rescue Gem::CommandLineError
+      # called by 'gem update'
     end
   end
 
