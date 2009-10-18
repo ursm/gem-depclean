@@ -57,7 +57,9 @@ class Gem::Commands::WorldCommand < Gem::Command
   end
 
   def list
-    YAML.load_file(world_path).sort_by(&:first).each do |name, versions|
+    YAML.load_file(world_path).sort_by {|name, versions|
+      name.downcase
+    }.each do |name, versions|
       say "#{name} (#{versions.join(', ')})"
     end
   end
