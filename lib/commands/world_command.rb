@@ -1,5 +1,7 @@
 require 'rubygems/command'
 require 'rubygems/requirement'
+require 'rubygems/uninstaller'
+require 'set'
 require 'yaml'
 
 class Gem::Commands::WorldCommand < Gem::Command
@@ -7,19 +9,15 @@ class Gem::Commands::WorldCommand < Gem::Command
     File.join(Gem.user_dir, 'world')
   end
 
-  def world_gems
-    YAML.load_file(world_path).inject([]) {|acc, (name, versions)|
-      acc + versions.map {|v|
-        Gem.source_index.find_name(name, v).sort_by(&:version).last
-      }.compact
-    }
-  end
-
   def initialize
-    super 'world', 'Display gems that in your world'
+    super 'world', 'Manage gems that in your world'
 
     add_option '--init' do |v, opts|
       opts[:init] = v
+    end
+
+    add_option '--depclean' do |v, opts|
+      opts[:depclean] = v
     end
 
     add_option '-e', '--edit' do |v, opts|
@@ -29,7 +27,9 @@ class Gem::Commands::WorldCommand < Gem::Command
 
   def execute
     if options[:init]
-      generate
+      init
+    elsif options[:depclean]
+      depclean
     elsif options[:edit]
       edit
     else
@@ -37,7 +37,7 @@ class Gem::Commands::WorldCommand < Gem::Command
     end
   end
 
-  def generate
+  def init
     if File.exist?(world_path)
       terminate_interaction unless ask_yes_no "'#{world_path}' is already exists. overwrite?"
     end
@@ -54,6 +54,31 @@ class Gem::Commands::WorldCommand < Gem::Command
     end
 
     say "'#{world_path}' was successfully initialized."
+  end
+
+  def depclean
+    terminate_if_world_is_missing
+
+    gems = world_gems.inject(Set.new) {|acc, gem|
+      acc + collect_dependencies(gem)
+    }
+
+    targets = (Gem.source_index.map(&:last) - gems.to_a).sort_by(&:name)
+
+    if targets.empty?
+      say 'Your world is already clean.'
+      terminate_interaction
+    end
+
+    targets.each do |t|
+      say "#{t.name} (#{t.version})"
+    end
+
+    terminate_interaction unless ask_yes_no 'Would you like to uninstall these gems?'
+
+    targets.each do |gem|
+      Gem::Uninstaller.new(gem.name, :version => gem.version, :user_install => true, :ignore => true).uninstall
+    end
   end
 
   def edit
@@ -96,6 +121,26 @@ class Gem::Commands::WorldCommand < Gem::Command
       alert_error "'#{world_path}' is missing. Please execute 'gem world --init'."
       terminate_interaction
     end
+  end
+
+  def world_gems
+    YAML.load_file(world_path).inject([]) {|acc, (name, versions)|
+      acc + versions.map {|v|
+        Gem.source_index.find_name(name, v).sort_by(&:version).last
+      }.compact
+    }
+  end
+
+  def collect_dependencies(gem, acc = Set.new)
+    acc << gem
+
+    gem.dependencies.map {|dep|
+      Gem.source_index.find_name(dep.name, dep.version_requirements).sort_by(&:version).last
+    }.compact.reject {|s| acc.include?(s) }.each do |dep|
+      collect_dependencies(dep, acc)
+    end
+
+    acc
   end
 end
 
