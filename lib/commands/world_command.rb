@@ -22,14 +22,29 @@ class Gem::Commands::WorldCommand < Gem::Command
     add_option '--init' do |v, opts|
       opts[:init] = v
     end
+
+    add_option '-e', '--edit' do |v, opts|
+      opts[:edit] = v
+    end
   end
 
   def execute
     if options[:init]
       init_world
+    elsif options[:edit]
+      edit
     else
       list
     end
+  end
+
+  def edit
+    unless editor = ENV['VISUAL'] || ENV['EDITOR']
+      alert_error 'Please set VISUAL or EDITOR variable.'
+      terminate_interaction
+    end
+
+    system editor, world_path
   end
 
   def add(name, version)
