@@ -51,6 +51,8 @@ class Gem::Commands::WorldCommand < Gem::Command
   end
 
   def edit
+    terminate_if_world_is_missing
+
     unless editor = ENV['VISUAL'] || ENV['EDITOR']
       alert_error 'Please set VISUAL or EDITOR variable.'
       terminate_interaction
@@ -60,6 +62,8 @@ class Gem::Commands::WorldCommand < Gem::Command
   end
 
   def list
+    terminate_if_world_is_missing
+
     YAML.load_file(world_path).sort_by {|name, versions|
       name.downcase
     }.each do |name, versions|
@@ -76,6 +80,15 @@ class Gem::Commands::WorldCommand < Gem::Command
 
         f.rewind
       }.to_yaml
+    end
+  end
+
+  private
+
+  def terminate_if_world_is_missing
+    unless File.exist?(world_path)
+      alert_error "'#{world_path}' is missing. Please execute 'gem world --init'."
+      terminate_interaction
     end
   end
 end
