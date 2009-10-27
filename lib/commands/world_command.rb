@@ -38,6 +38,10 @@ class Gem::Commands::WorldCommand < Gem::Command
   end
 
   def generate
+    if File.exist?(world_path)
+      terminate_interaction unless ask_yes_no "'#{world_path}' is already exists. overwrite?"
+    end
+
     open(world_path, 'w') do |f|
       f << Gem.source_index.map(&:last).select {|spec|
         spec.dependent_gems.empty?
@@ -48,6 +52,8 @@ class Gem::Commands::WorldCommand < Gem::Command
         h.merge(name => versions.map(&:to_s))
       }.to_yaml
     end
+
+    say "'#{world_path}' was successfully initialized."
   end
 
   def edit
