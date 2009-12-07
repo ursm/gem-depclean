@@ -4,21 +4,21 @@ Provides the function to uninstall an unnecessary gems.
 
 == Install
 
-  % gem install gem-depclean --source http://gemcutter.org
+ % gem install gem-depclean --source http://gemcutter.org
 
 == Usage
 
 First, initialize your world. The gems that you installed is output to the "world file".
 
-  % gem world --init
+ % gem world --init
 
 Next, edit this. Delete the line of an unnecessary gems or versions.
 
-  % gem world --edit
+ % gem world --edit
 
 Finally, uninstall them. The gems which lost dependence is uninstalled at the same time.
 
-  % gem world --depclean
+ % gem world --depclean
 
 When you install a gem, it is automatically recorded in the "world file".
 
@@ -30,7 +30,7 @@ When you install a gem, it is automatically recorded in the "world file".
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
+  bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
