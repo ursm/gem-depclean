@@ -1,9 +1,29 @@
 = gem-depclean
 
-Description goes here.
+Provides the function to uninstall an unnecessary gems.
+
+== Install
+
+  % gem install gem-depclean --source http://gemcutter.org
+
+== Usage
+
+First, initialize your world. The gems that you installed is output to the "world file".
+
+  % gem world --init
+
+Next, edit this. Delete the line of an unnecessary gems or versions.
+
+  % gem world --edit
+
+Finally, uninstall them. The gems which lost dependence is uninstalled at the same time.
+
+  % gem world --depclean
+
+When you install a gem, it is automatically recorded in the "world file".
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
@@ -16,3 +36,4 @@ Description goes here.
 == Copyright
 
 Copyright (c) 2009 Keita Urashima. See LICENSE for details.
+gem-depclean's development has been supported by Eiwa System Management, Inc.
