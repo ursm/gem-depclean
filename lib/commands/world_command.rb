@@ -135,7 +135,7 @@ class Gem::Commands::WorldCommand < Gem::Command
     acc << gem
 
     gem.dependencies.map {|dep|
-      Gem.source_index.find_name(dep.name, dep.version_requirements).sort_by(&:version).last
+      Gem.source_index.find_name(dep.name, dep.requirement).sort_by(&:version).last
     }.compact.reject {|s| acc.include?(s) }.each do |dep|
       collect_dependencies(dep, acc)
     end
